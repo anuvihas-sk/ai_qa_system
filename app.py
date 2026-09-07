@@ -1,9 +1,6 @@
-from dotenv import load_dotenv
-
 from pdf_reader import extract_text_from_pdf
 from llm import ask_llm
 
-load_dotenv()
 
 PDF_PATH = "sample.pdf"
 
