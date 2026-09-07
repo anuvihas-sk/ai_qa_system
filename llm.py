@@ -1,7 +1,5 @@
-from openai import OpenAI
-import os
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+import json
+import urllib.request
 
 
 def ask_llm(document_text, question):
@@ -24,9 +22,19 @@ Question:
 Answer:
 """
 
-    response = client.responses.create(
-        model="gpt-4.1-mini",
-        input=prompt
+    data = json.dumps({
+        "model": "llama3.2:3b",
+        "prompt": prompt,
+        "stream": False
+    }).encode("utf-8")
+
+    request = urllib.request.Request(
+        "http://localhost:11434/api/generate",
+        data=data,
+        headers={"Content-Type": "application/json"}
     )
 
-    return response.output_text
+    with urllib.request.urlopen(request) as response:
+        result = json.loads(response.read().decode("utf-8"))
+
+    return result["response"]
